@@ -11,6 +11,7 @@ export default function Home() {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
+    
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -96,19 +97,20 @@ export default function Home() {
       </nav>
 
       {/* Hero Section - Cinematic */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-16">
-        {/* Background with Overlay */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-8 md:pt-24 md:pb-16">
+        {/* Background with Banner Image */}
         <div className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-[#0B1D2E] via-[#1A3A52] to-[#0B1D2E]">
-            {/* Image Placeholder */}
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="text-center opacity-[0.03] text-white px-4">
-                <p className="text-lg md:text-xl font-light mb-2"></p>
-                <p className="text-xs md:text-sm">Luxury vehicle at Jaipur Airport / Udaipur Palace backdrop</p>
-                <p className="text-[10px] md:text-xs mt-1">Suggested: Mercedes S-Class with professional chauffeur</p>
-              </div>
-            </div>
+          <div className="absolute inset-0">
+            <Image
+              src="/assets/Banner.webp"
+              alt="Rao Travels Premium Service"
+              fill
+              priority
+              className="object-cover"
+              quality={90}
+            />
           </div>
+          <div className="absolute inset-0 bg-gradient-to-br from-[#0B1D2E]/80 via-[#1A3A52]/70 to-[#0B1D2E]/80"></div>
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent"></div>
         </div>
@@ -179,188 +181,233 @@ export default function Home() {
       </section>
 
       {/* Services Section - Premium Grid */}
-      <section id="services" className="py-32 bg-white">
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
+      <section id="services" className="py-16 md:py-32 relative overflow-hidden">
+        {/* Premium Background - Elegant Gold Gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-[#FDF9F3] via-white to-[#FEFBF7]"></div>
+        
+        {/* Subtle Pattern Overlay */}
+        <div className="absolute inset-0 opacity-[0.02]">
+          <div className="absolute inset-0" style={{
+            backgroundImage: `repeating-linear-gradient(45deg, transparent, transparent 35px, #C9A961 35px, #C9A961 36px)`,
+          }}></div>
+        </div>
+        
+        {/* Decorative Elements */}
+        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#C9A961]/30 to-transparent"></div>
+        <div className="absolute top-20 left-1/4 w-px h-32 bg-gradient-to-b from-[#C9A961]/20 to-transparent hidden md:block"></div>
+        <div className="absolute bottom-20 right-1/4 w-px h-32 bg-gradient-to-t from-[#C9A961]/20 to-transparent hidden md:block"></div>
+        
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12 relative z-10">
           {/* Section Header */}
-          <div className="text-center max-w-3xl mx-auto mb-20">
-            <div className="flex items-center justify-center mb-6">
-              <div className="h-[1px] w-12 bg-[#C9A961]"></div>
-              <span className="mx-4 text-[#C9A961] text-xs tracking-[0.3em] uppercase font-medium">Our Services</span>
-              <div className="h-[1px] w-12 bg-[#C9A961]"></div>
+          <div className="text-center max-w-3xl mx-auto mb-12 md:mb-20">
+            <div className="flex items-center justify-center mb-4 md:mb-6">
+              <div className="h-px w-12 md:w-20 bg-gradient-to-r from-transparent via-[#C9A961] to-transparent"></div>
+              <span className="mx-4 md:mx-6 text-[#C9A961] text-[10px] md:text-xs tracking-[0.3em] md:tracking-[0.4em] uppercase font-medium">Our Services</span>
+              <div className="h-px w-12 md:w-20 bg-gradient-to-l from-transparent via-[#C9A961] to-transparent"></div>
             </div>
-            <h2 className="font-serif text-5xl md:text-6xl lg:text-7xl font-bold text-[#0B1D2E] mb-6 leading-tight tracking-tight">
+            <h2 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-[#0B1D2E] mb-4 md:mb-6 leading-tight tracking-tight px-4">
               Curated <span className="text-[#C9A961]">Experiences</span>
             </h2>
-            <p className="font-display text-xl text-gray-600 leading-relaxed">
+            <p className="font-display text-base md:text-xl text-gray-600 leading-relaxed px-4">
               Tailored transportation solutions for the discerning traveler
             </p>
           </div>
 
           {/* Services Grid */}
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {/* Service 1 */}
-            <div className="group relative bg-[#F5F1E8] rounded-none overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
-              <div className="absolute top-0 left-0 w-1 h-0 bg-gradient-to-b from-[#C9A961] to-[#B8954A] group-hover:h-full transition-all duration-500"></div>
-              <div className="p-10">
-                <div className="w-16 h-16 bg-[#0B1D2E] rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                  <span className="text-3xl">✈️</span>
+            <div className="group relative bg-white rounded-xl md:rounded-2xl overflow-hidden hover:shadow-[0_25px_80px_rgba(201,169,97,0.2)] transition-all duration-700 transform hover:-translate-y-2 md:hover:-translate-y-4 border border-[#F5F1E8]">
+              {/* Top Accent Bar */}
+              <div className="absolute top-0 left-0 right-0 h-1 md:h-1.5 bg-gradient-to-r from-[#C9A961] via-[#E8DCC4] to-[#C9A961]"></div>
+              
+              {/* Hover Glow Effect */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[#C9A961]/0 via-[#C9A961]/0 to-[#C9A961]/0 group-hover:from-[#C9A961]/5 group-hover:via-[#C9A961]/3 group-hover:to-[#C9A961]/5 transition-all duration-700"></div>
+              
+              <div className="relative p-6 md:p-10">
+                {/* Icon Container */}
+                <div className="relative mb-6 md:mb-8">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#C9A961]/20 to-[#E8DCC4]/20 rounded-xl md:rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-700"></div>
+                  <div className="relative w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#C9A961]/10 to-[#E8DCC4]/10 rounded-xl md:rounded-2xl flex items-center justify-center border border-[#C9A961]/20 group-hover:scale-110 group-hover:border-[#C9A961]/40 transition-all duration-700 shadow-lg">
+                    <span className="text-3xl md:text-4xl">✈️</span>
+                  </div>
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-[#0B1D2E] mb-4">Airport Transfers</h3>
-                <p className="text-gray-600 leading-relaxed mb-6">
+                
+                <h3 className="font-serif text-xl md:text-2xl font-bold text-[#0B1D2E] mb-3 md:mb-4 group-hover:text-[#C9A961] transition-colors duration-300">Airport Transfers</h3>
+                <p className="text-gray-600 leading-relaxed mb-6 md:mb-8 text-sm md:text-[15px]">
                   Seamless arrivals and departures at Jaipur International and Udaipur Maharana Pratap Airport with complimentary meet & greet.
                 </p>
-                <ul className="space-y-3">
-                  <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#C9A961] mr-3 mt-1">●</span>
-                    <span>Real-time flight tracking</span>
+                <ul className="space-y-3 md:space-y-4">
+                  <li className="flex items-start text-xs md:text-sm text-gray-700">
+                    <span className="text-[#C9A961] mr-2 md:mr-3 mt-0.5 text-lg md:text-xl font-bold">✓</span>
+                    <span className="leading-relaxed">Real-time flight tracking</span>
                   </li>
-                  <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#C9A961] mr-3 mt-1">●</span>
-                    <span>Personalized name board</span>
+                  <li className="flex items-start text-xs md:text-sm text-gray-700">
+                    <span className="text-[#C9A961] mr-2 md:mr-3 mt-0.5 text-lg md:text-xl font-bold">✓</span>
+                    <span className="leading-relaxed">Personalized name board</span>
                   </li>
-                  <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#C9A961] mr-3 mt-1">●</span>
-                    <span>Porter assistance included</span>
+                  <li className="flex items-start text-xs md:text-sm text-gray-700">
+                    <span className="text-[#C9A961] mr-2 md:mr-3 mt-0.5 text-lg md:text-xl font-bold">✓</span>
+                    <span className="leading-relaxed">Porter assistance included</span>
                   </li>
                 </ul>
               </div>
             </div>
 
             {/* Service 2 */}
-            <div className="group relative bg-[#F5F1E8] rounded-none overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
-              <div className="absolute top-0 left-0 w-1 h-0 bg-gradient-to-b from-[#C9A961] to-[#B8954A] group-hover:h-full transition-all duration-500"></div>
-              <div className="p-10">
-                <div className="w-16 h-16 bg-[#0B1D2E] rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                  <span className="text-3xl">🚂</span>
+            <div className="group relative bg-white rounded-2xl overflow-hidden hover:shadow-[0_25px_80px_rgba(212,165,165,0.2)] transition-all duration-700 transform hover:-translate-y-4 border border-[#F5EDED]">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#D4A5A5] via-[#E8C5C5] to-[#D4A5A5]"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#D4A5A5]/0 via-[#D4A5A5]/0 to-[#D4A5A5]/0 group-hover:from-[#D4A5A5]/5 group-hover:via-[#D4A5A5]/3 group-hover:to-[#D4A5A5]/5 transition-all duration-700"></div>
+              <div className="relative p-10">
+                <div className="relative mb-8">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#D4A5A5]/20 to-[#E8C5C5]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-700"></div>
+                  <div className="relative w-20 h-20 bg-gradient-to-br from-[#D4A5A5]/10 to-[#E8C5C5]/10 rounded-2xl flex items-center justify-center border border-[#D4A5A5]/20 group-hover:scale-110 group-hover:border-[#D4A5A5]/40 transition-all duration-700 shadow-lg">
+                    <span className="text-4xl">🚂</span>
+                  </div>
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-[#0B1D2E] mb-4">Railway Concierge</h3>
-                <p className="text-gray-600 leading-relaxed mb-6">
+                <h3 className="font-serif text-2xl font-bold text-[#0B1D2E] mb-4 group-hover:text-[#D4A5A5] transition-colors duration-300">Railway Concierge</h3>
+                <p className="text-gray-600 leading-relaxed mb-8 text-[15px]">
                   Premium pickups from Jaipur Junction and Udaipur City Station. Platform-side service for your convenience.
                 </p>
-                <ul className="space-y-3">
+                <ul className="space-y-4">
                   <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#C9A961] mr-3 mt-1">●</span>
-                    <span>Platform-side pickup</span>
+                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                    <span className="leading-relaxed">Platform-side pickup</span>
                   </li>
                   <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#C9A961] mr-3 mt-1">●</span>
-                    <span>Train delay monitoring</span>
+                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                    <span className="leading-relaxed">Train delay monitoring</span>
                   </li>
                   <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#C9A961] mr-3 mt-1">●</span>
-                    <span>Refreshments on board</span>
+                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                    <span className="leading-relaxed">Refreshments on board</span>
                   </li>
                 </ul>
               </div>
             </div>
 
             {/* Service 3 */}
-            <div className="group relative bg-[#F5F1E8] rounded-none overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
-              <div className="absolute top-0 left-0 w-1 h-0 bg-gradient-to-b from-[#C9A961] to-[#B8954A] group-hover:h-full transition-all duration-500"></div>
-              <div className="p-10">
-                <div className="w-16 h-16 bg-[#0B1D2E] rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                  <span className="text-3xl">🏰</span>
+            <div className="group relative bg-white rounded-2xl overflow-hidden hover:shadow-[0_25px_80px_rgba(212,165,165,0.2)] transition-all duration-700 transform hover:-translate-y-4 border border-[#F5EDED]">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#D4A5A5] via-[#E8C5C5] to-[#D4A5A5]"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#D4A5A5]/0 via-[#D4A5A5]/0 to-[#D4A5A5]/0 group-hover:from-[#D4A5A5]/5 group-hover:via-[#D4A5A5]/3 group-hover:to-[#D4A5A5]/5 transition-all duration-700"></div>
+              <div className="relative p-10">
+                <div className="relative mb-8">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#D4A5A5]/20 to-[#E8C5C5]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-700"></div>
+                  <div className="relative w-20 h-20 bg-gradient-to-br from-[#D4A5A5]/10 to-[#E8C5C5]/10 rounded-2xl flex items-center justify-center border border-[#D4A5A5]/20 group-hover:scale-110 group-hover:border-[#D4A5A5]/40 transition-all duration-700 shadow-lg">
+                    <span className="text-4xl">🏰</span>
+                  </div>
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-[#0B1D2E] mb-4">Heritage Tours</h3>
-                <p className="text-gray-600 leading-relaxed mb-6">
+                <h3 className="font-serif text-2xl font-bold text-[#0B1D2E] mb-4 group-hover:text-[#D4A5A5] transition-colors duration-300">Heritage Tours</h3>
+                <p className="text-gray-600 leading-relaxed mb-8 text-[15px]">
                   Bespoke cultural journeys through Rajasthan's magnificent palaces, forts, and hidden gems.
                 </p>
-                <ul className="space-y-3">
+                <ul className="space-y-4">
                   <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#C9A961] mr-3 mt-1">●</span>
-                    <span>Certified heritage guides</span>
+                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                    <span className="leading-relaxed">Certified heritage guides</span>
                   </li>
                   <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#C9A961] mr-3 mt-1">●</span>
-                    <span>Skip-the-line access</span>
+                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                    <span className="leading-relaxed">Skip-the-line access</span>
                   </li>
                   <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#C9A961] mr-3 mt-1">●</span>
-                    <span>Custom itineraries</span>
+                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                    <span className="leading-relaxed">Custom itineraries</span>
                   </li>
                 </ul>
               </div>
             </div>
 
             {/* Service 4 */}
-            <div className="group relative bg-[#F5F1E8] rounded-none overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
-              <div className="absolute top-0 left-0 w-1 h-0 bg-gradient-to-b from-[#C9A961] to-[#B8954A] group-hover:h-full transition-all duration-500"></div>
-              <div className="p-10">
-                <div className="w-16 h-16 bg-[#0B1D2E] rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                  <span className="text-3xl">💼</span>
+            <div className="group relative bg-white rounded-2xl overflow-hidden hover:shadow-[0_25px_80px_rgba(212,165,165,0.2)] transition-all duration-700 transform hover:-translate-y-4 border border-[#F5EDED]">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#D4A5A5] via-[#E8C5C5] to-[#D4A5A5]"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#D4A5A5]/0 via-[#D4A5A5]/0 to-[#D4A5A5]/0 group-hover:from-[#D4A5A5]/5 group-hover:via-[#D4A5A5]/3 group-hover:to-[#D4A5A5]/5 transition-all duration-700"></div>
+              <div className="relative p-10">
+                <div className="relative mb-8">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#D4A5A5]/20 to-[#E8C5C5]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-700"></div>
+                  <div className="relative w-20 h-20 bg-gradient-to-br from-[#D4A5A5]/10 to-[#E8C5C5]/10 rounded-2xl flex items-center justify-center border border-[#D4A5A5]/20 group-hover:scale-110 group-hover:border-[#D4A5A5]/40 transition-all duration-700 shadow-lg">
+                    <span className="text-4xl">💼</span>
+                  </div>
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-[#0B1D2E] mb-4">Executive Services</h3>
-                <p className="text-gray-600 leading-relaxed mb-6">
+                <h3 className="font-serif text-2xl font-bold text-[#0B1D2E] mb-4 group-hover:text-[#D4A5A5] transition-colors duration-300">Executive Services</h3>
+                <p className="text-gray-600 leading-relaxed mb-8 text-[15px]">
                   Professional transportation for business travelers with productivity-focused amenities.
                 </p>
-                <ul className="space-y-3">
+                <ul className="space-y-4">
                   <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#C9A961] mr-3 mt-1">●</span>
-                    <span>Mobile office setup</span>
+                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                    <span className="leading-relaxed">Mobile office setup</span>
                   </li>
                   <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#C9A961] mr-3 mt-1">●</span>
-                    <span>Corporate billing</span>
+                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                    <span className="leading-relaxed">Corporate billing</span>
                   </li>
                   <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#C9A961] mr-3 mt-1">●</span>
-                    <span>Multi-city packages</span>
+                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                    <span className="leading-relaxed">Multi-city packages</span>
                   </li>
                 </ul>
               </div>
             </div>
 
             {/* Service 5 */}
-            <div className="group relative bg-[#F5F1E8] rounded-none overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
-              <div className="absolute top-0 left-0 w-1 h-0 bg-gradient-to-b from-[#C9A961] to-[#B8954A] group-hover:h-full transition-all duration-500"></div>
-              <div className="p-10">
-                <div className="w-16 h-16 bg-[#0B1D2E] rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                  <span className="text-3xl">💍</span>
+            <div className="group relative bg-white rounded-2xl overflow-hidden hover:shadow-[0_25px_80px_rgba(212,165,165,0.2)] transition-all duration-700 transform hover:-translate-y-4 border border-[#F5EDED]">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#D4A5A5] via-[#E8C5C5] to-[#D4A5A5]"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#D4A5A5]/0 via-[#D4A5A5]/0 to-[#D4A5A5]/0 group-hover:from-[#D4A5A5]/5 group-hover:via-[#D4A5A5]/3 group-hover:to-[#D4A5A5]/5 transition-all duration-700"></div>
+              <div className="relative p-10">
+                <div className="relative mb-8">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#D4A5A5]/20 to-[#E8C5C5]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-700"></div>
+                  <div className="relative w-20 h-20 bg-gradient-to-br from-[#D4A5A5]/10 to-[#E8C5C5]/10 rounded-2xl flex items-center justify-center border border-[#D4A5A5]/20 group-hover:scale-110 group-hover:border-[#D4A5A5]/40 transition-all duration-700 shadow-lg">
+                    <span className="text-4xl">💍</span>
+                  </div>
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-[#0B1D2E] mb-4">Special Occasions</h3>
-                <p className="text-gray-600 leading-relaxed mb-6">
+                <h3 className="font-serif text-2xl font-bold text-[#0B1D2E] mb-4 group-hover:text-[#D4A5A5] transition-colors duration-300">Special Occasions</h3>
+                <p className="text-gray-600 leading-relaxed mb-8 text-[15px]">
                   Celebrate life's precious moments with our decorated luxury vehicles and white-glove service.
                 </p>
-                <ul className="space-y-3">
+                <ul className="space-y-4">
                   <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#C9A961] mr-3 mt-1">●</span>
-                    <span>Floral decorations</span>
+                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                    <span className="leading-relaxed">Floral decorations</span>
                   </li>
                   <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#C9A961] mr-3 mt-1">●</span>
-                    <span>Champagne service</span>
+                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                    <span className="leading-relaxed">Champagne service</span>
                   </li>
                   <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#C9A961] mr-3 mt-1">●</span>
-                    <span>Photography assistance</span>
+                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                    <span className="leading-relaxed">Photography assistance</span>
                   </li>
                 </ul>
               </div>
             </div>
 
             {/* Service 6 */}
-            <div className="group relative bg-[#F5F1E8] rounded-none overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2">
-              <div className="absolute top-0 left-0 w-1 h-0 bg-gradient-to-b from-[#C9A961] to-[#B8954A] group-hover:h-full transition-all duration-500"></div>
-              <div className="p-10">
-                <div className="w-16 h-16 bg-[#0B1D2E] rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-500">
-                  <span className="text-3xl">🛣️</span>
+            <div className="group relative bg-white rounded-2xl overflow-hidden hover:shadow-[0_25px_80px_rgba(212,165,165,0.2)] transition-all duration-700 transform hover:-translate-y-4 border border-[#F5EDED]">
+              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#D4A5A5] via-[#E8C5C5] to-[#D4A5A5]"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#D4A5A5]/0 via-[#D4A5A5]/0 to-[#D4A5A5]/0 group-hover:from-[#D4A5A5]/5 group-hover:via-[#D4A5A5]/3 group-hover:to-[#D4A5A5]/5 transition-all duration-700"></div>
+              <div className="relative p-10">
+                <div className="relative mb-8">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#D4A5A5]/20 to-[#E8C5C5]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-700"></div>
+                  <div className="relative w-20 h-20 bg-gradient-to-br from-[#D4A5A5]/10 to-[#E8C5C5]/10 rounded-2xl flex items-center justify-center border border-[#D4A5A5]/20 group-hover:scale-110 group-hover:border-[#D4A5A5]/40 transition-all duration-700 shadow-lg">
+                    <span className="text-4xl">🛣️</span>
+                  </div>
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-[#0B1D2E] mb-4">Intercity Journeys</h3>
-                <p className="text-gray-600 leading-relaxed mb-6">
+                <h3 className="font-serif text-2xl font-bold text-[#0B1D2E] mb-4 group-hover:text-[#D4A5A5] transition-colors duration-300">Intercity Journeys</h3>
+                <p className="text-gray-600 leading-relaxed mb-8 text-[15px]">
                   Comfortable long-distance travel between Rajasthan's cities with scenic routes and rest stops.
                 </p>
-                <ul className="space-y-3">
+                <ul className="space-y-4">
                   <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#C9A961] mr-3 mt-1">●</span>
-                    <span>Flexible routing</span>
+                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                    <span className="leading-relaxed">Flexible routing</span>
                   </li>
                   <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#C9A961] mr-3 mt-1">●</span>
-                    <span>Curated rest stops</span>
+                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                    <span className="leading-relaxed">Curated rest stops</span>
                   </li>
                   <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#C9A961] mr-3 mt-1">●</span>
-                    <span>Refreshment packages</span>
+                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                    <span className="leading-relaxed">Refreshment packages</span>
                   </li>
                 </ul>
               </div>
@@ -391,14 +438,15 @@ export default function Home() {
           <div className="grid lg:grid-cols-3 gap-8 mb-16">
             {/* Vehicle 1 */}
             <div className="group relative bg-[#1A3A52] rounded-none overflow-hidden hover:shadow-2xl transition-all duration-500">
-              <div className="relative h-72 bg-gradient-to-br from-gray-800 to-gray-900 overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center text-center p-6 text-gray-600">
-                  <div>
-                    <p className="text-base font-medium mb-2">[ Luxury Sedan Image ]</p>
-                    <p className="text-xs leading-relaxed">Mercedes-Benz E-Class / BMW 5 Series<br/>600x400px Professional photo</p>
-                  </div>
-                </div>
-                <div className="absolute top-4 right-4 bg-[#C9A961] px-4 py-1.5 text-xs tracking-wide uppercase font-medium">
+              <div className="relative h-72 overflow-hidden">
+                <Image
+                  src="/assets/sedan.avif"
+                  alt="Luxury Sedan"
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1A3A52] via-transparent to-transparent"></div>
+                <div className="absolute top-4 right-4 bg-[#D4A5A5] px-4 py-1.5 text-xs tracking-wide uppercase font-medium shadow-lg">
                   Premium
                 </div>
               </div>
@@ -435,14 +483,15 @@ export default function Home() {
 
             {/* Vehicle 2 */}
             <div className="group relative bg-[#1A3A52] rounded-none overflow-hidden hover:shadow-2xl transition-all duration-500">
-              <div className="relative h-72 bg-gradient-to-br from-gray-800 to-gray-900 overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center text-center p-6 text-gray-600">
-                  <div>
-                    <p className="text-base font-medium mb-2">[ Luxury SUV Image ]</p>
-                    <p className="text-xs leading-relaxed">Toyota Fortuner / Mahindra Alturas<br/>600x400px Professional photo</p>
-                  </div>
-                </div>
-                <div className="absolute top-4 right-4 bg-[#C9A961] px-4 py-1.5 text-xs tracking-wide uppercase font-medium">
+              <div className="relative h-72 overflow-hidden">
+                <Image
+                  src="/assets/fortuner.avif"
+                  alt="Luxury SUV"
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1A3A52] via-transparent to-transparent"></div>
+                <div className="absolute top-4 right-4 bg-[#D4A5A5] px-4 py-1.5 text-xs tracking-wide uppercase font-medium shadow-lg">
                   Popular
                 </div>
               </div>
@@ -479,14 +528,15 @@ export default function Home() {
 
             {/* Vehicle 3 */}
             <div className="group relative bg-[#1A3A52] rounded-none overflow-hidden hover:shadow-2xl transition-all duration-500">
-              <div className="relative h-72 bg-gradient-to-br from-gray-800 to-gray-900 overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center text-center p-6 text-gray-600">
-                  <div>
-                    <p className="text-base font-medium mb-2">[ Executive Van Image ]</p>
-                    <p className="text-xs leading-relaxed">Mercedes V-Class / Toyota Hiace<br/>600x400px Professional photo</p>
-                  </div>
-                </div>
-                <div className="absolute top-4 right-4 bg-[#C9A961] px-4 py-1.5 text-xs tracking-wide uppercase font-medium">
+              <div className="relative h-72 overflow-hidden">
+                <Image
+                  src="/assets/toyota_hiace.avif"
+                  alt="Executive Van"
+                  fill
+                  className="object-cover group-hover:scale-110 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#1A3A52] via-transparent to-transparent"></div>
+                <div className="absolute top-4 right-4 bg-[#D4A5A5] px-4 py-1.5 text-xs tracking-wide uppercase font-medium shadow-lg">
                   Groups
                 </div>
               </div>
