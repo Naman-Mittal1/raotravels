@@ -1,4 +1,4 @@
-import { Playfair_Display, Inter, Cormorant_Garamond } from "next/font/google";
+import { Playfair_Display, Inter, Cormorant_Garamond, Poppins } from "next/font/google";
 import "./globals.css";
 
 const playfair = Playfair_Display({
@@ -22,6 +22,14 @@ const cormorant = Cormorant_Garamond({
   display: "swap",
 });
 
+const poppins = Poppins({
+  variable: "--font-poppins",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+  preload: true,
+});
+
 export const metadata = {
   title: "Rao Travels - Premium Airport & Railway Transfers | Jaipur & Udaipur",
   description: "Experience luxury travel with Rao Travels. Premium airport and railway station transfers in Jaipur and Udaipur. Professional chauffeurs, modern fleet, 24/7 service.",
@@ -31,7 +39,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${playfair.variable} ${inter.variable} ${cormorant.variable} antialiased`}
+        className={`${playfair.variable} ${inter.variable} ${cormorant.variable} ${poppins.variable} antialiased`}
       >
         {children}
       </body>

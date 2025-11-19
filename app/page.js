@@ -6,40 +6,63 @@ import Image from 'next/image';
 export default function Home() {
   const [scrolled, setScrolled] = useState(false);
   const [activeLocation, setActiveLocation] = useState('jaipur');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [currentFleetIndex, setCurrentFleetIndex] = useState(0);
+  const [currentTestimonialIndex, setCurrentTestimonialIndex] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
+      
+      // Reveal animations on scroll
+      const reveals = document.querySelectorAll('.scroll-reveal');
+      reveals.forEach(element => {
+        const elementTop = element.getBoundingClientRect().top;
+        const elementVisible = 150;
+        if (elementTop < window.innerHeight - elementVisible) {
+          element.classList.add('active');
+        }
+      });
     };
     
     window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial check
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+  }, [mobileMenuOpen]);
 
   return (
     <div className="min-h-screen bg-[#FAFAFA]">
       {/* Premium Navigation */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         scrolled 
-          ? 'bg-white/90 backdrop-blur-2xl shadow-[0_2px_40px_rgba(0,0,0,0.08)]' 
+          ? 'bg-white/95 backdrop-blur-2xl shadow-[0_2px_40px_rgba(0,0,0,0.08)]' 
           : 'bg-transparent'
       }`}>
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-          <div className="flex justify-between items-center h-24">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12">
+          <div className="flex justify-between items-center h-16 sm:h-20 lg:h-24">
             {/* Logo */}
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2 sm:space-x-3">
               <div className="relative">
-                <div className="w-12 h-12 bg-gradient-to-br from-[#C9A961] to-[#B8954A] rounded-sm flex items-center justify-center shadow-lg">
-                  <span className="font-serif text-2xl font-bold text-white tracking-tight">R</span>
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-[#C9A961] to-[#B8954A] rounded-sm flex items-center justify-center shadow-lg">
+                  <span className="font-serif text-xl sm:text-2xl font-bold text-white tracking-tight">R</span>
                 </div>
               </div>
               <div className="flex flex-col">
-                <span className={`font-serif text-2xl font-bold tracking-tight transition-colors ${
+                <span className={`font-serif text-lg sm:text-xl lg:text-2xl font-bold tracking-tight transition-colors ${
                   scrolled ? 'text-[#0B1D2E]' : 'text-white drop-shadow-lg'
                 }`}>
                   Rao Travels
                 </span>
-                <span className={`text-[10px] tracking-[0.2em] uppercase font-medium ${
+                <span className={`text-[8px] sm:text-[10px] tracking-[0.15em] sm:tracking-[0.2em] uppercase font-medium ${
                   scrolled ? 'text-[#C9A961]' : 'text-[#E8DCC4]'
                 }`}>
                   Royal Journeys
@@ -47,30 +70,30 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Navigation Links */}
+            {/* Desktop Navigation Links */}
             <div className="hidden lg:flex items-center space-x-12">
-              <a href="#services" className={`text-sm tracking-wide font-medium transition-all ${
+              <a href="#services" className={`font-poppins text-sm tracking-wide font-medium transition-all ${
                 scrolled 
                   ? 'text-[#0B1D2E] hover:text-[#C9A961]' 
                   : 'text-white hover:text-[#E8DCC4]'
               }`}>
                 Services
               </a>
-              <a href="#fleet" className={`text-sm tracking-wide font-medium transition-all ${
+              <a href="#fleet" className={`font-poppins text-sm tracking-wide font-medium transition-all ${
                 scrolled 
                   ? 'text-[#0B1D2E] hover:text-[#C9A961]' 
                   : 'text-white hover:text-[#E8DCC4]'
               }`}>
                 Fleet
               </a>
-              <a href="#locations" className={`text-sm tracking-wide font-medium transition-all ${
+              <a href="#locations" className={`font-poppins text-sm tracking-wide font-medium transition-all ${
                 scrolled 
                   ? 'text-[#0B1D2E] hover:text-[#C9A961]' 
                   : 'text-white hover:text-[#E8DCC4]'
               }`}>
                 Destinations
               </a>
-              <a href="#experience" className={`text-sm tracking-wide font-medium transition-all ${
+              <a href="#experience" className={`font-poppins text-sm tracking-wide font-medium transition-all ${
                 scrolled 
                   ? 'text-[#0B1D2E] hover:text-[#C9A961]' 
                   : 'text-white hover:text-[#E8DCC4]'
@@ -79,25 +102,100 @@ export default function Home() {
               </a>
             </div>
 
-            {/* CTA */}
-            <div className="flex items-center space-x-6">
-              <a href="tel:+911234567890" className={`hidden md:flex items-center space-x-2 text-sm font-medium ${
-                scrolled ? 'text-[#0B1D2E]' : 'text-white'
-              }`}>
-                <span className="text-lg">📞</span>
-                <span>+91 123 456 7890</span>
-              </a>
-              <button className="group relative px-8 py-3 bg-gradient-to-r from-[#C9A961] to-[#B8954A] text-white text-sm font-medium tracking-wide overflow-hidden rounded-sm shadow-lg hover:shadow-xl transition-all duration-300">
+            {/* Desktop CTA + Mobile Menu Button */}
+            <div className="flex items-center space-x-3 sm:space-x-4 lg:space-x-6">
+              <button className="hidden sm:block group relative px-4 sm:px-6 lg:px-8 py-2 sm:py-2.5 lg:py-3 bg-gradient-to-r from-[#C9A961] to-[#B8954A] text-white text-xs sm:text-sm font-poppins font-medium tracking-wide overflow-hidden rounded-sm shadow-lg hover:shadow-xl transition-all duration-300">
                 <span className="relative z-10">Reserve Now</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-[#B8954A] to-[#C9A961] opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </button>
+
+              {/* Mobile Hamburger */}
+              <button 
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                className="lg:hidden relative w-10 h-10 flex flex-col items-center justify-center space-y-1.5 z-50"
+                aria-label="Toggle menu"
+              >
+                <span className={`block w-6 h-0.5 transition-all duration-300 ${
+                  mobileMenuOpen 
+                    ? 'rotate-45 translate-y-2 bg-white' 
+                    : scrolled ? 'bg-[#0B1D2E]' : 'bg-white'
+                }`}></span>
+                <span className={`block w-6 h-0.5 transition-all duration-300 ${
+                  mobileMenuOpen 
+                    ? 'opacity-0' 
+                    : scrolled ? 'bg-[#0B1D2E]' : 'bg-white'
+                }`}></span>
+                <span className={`block w-6 h-0.5 transition-all duration-300 ${
+                  mobileMenuOpen 
+                    ? '-rotate-45 -translate-y-2 bg-white' 
+                    : scrolled ? 'bg-[#0B1D2E]' : 'bg-white'
+                }`}></span>
               </button>
             </div>
           </div>
         </div>
       </nav>
 
+      {/* Mobile Full-Screen Menu */}
+      <div className={`fixed inset-0 z-40 lg:hidden transition-all duration-500 ${
+        mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+      }`}>
+        <div className="absolute inset-0 bg-gradient-to-br from-[#0B1D2E] via-[#1A3A52] to-[#0B1D2E]">
+          {/* Decorative elements */}
+          <div className="absolute top-20 right-10 w-64 h-64 bg-[#C9A961]/10 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-20 left-10 w-80 h-80 bg-[#C9A961]/10 rounded-full blur-3xl"></div>
+        </div>
+        
+        <div className={`relative h-full flex flex-col items-center justify-center space-y-8 px-8 transition-all duration-700 ${
+          mobileMenuOpen ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+        }`}>
+          <a 
+            href="#services" 
+            onClick={() => setMobileMenuOpen(false)}
+            className="font-serif text-4xl font-bold text-white hover:text-[#C9A961] transition-all duration-300 transform hover:scale-110"
+            style={{animationDelay: '0.1s'}}
+          >
+            Services
+          </a>
+          <a 
+            href="#fleet" 
+            onClick={() => setMobileMenuOpen(false)}
+            className="font-serif text-4xl font-bold text-white hover:text-[#C9A961] transition-all duration-300 transform hover:scale-110"
+            style={{animationDelay: '0.2s'}}
+          >
+            Fleet
+          </a>
+          <a 
+            href="#locations" 
+            onClick={() => setMobileMenuOpen(false)}
+            className="font-serif text-4xl font-bold text-white hover:text-[#C9A961] transition-all duration-300 transform hover:scale-110"
+            style={{animationDelay: '0.3s'}}
+          >
+            Destinations
+          </a>
+          <a 
+            href="#experience" 
+            onClick={() => setMobileMenuOpen(false)}
+            className="font-serif text-4xl font-bold text-white hover:text-[#C9A961] transition-all duration-300 transform hover:scale-110"
+            style={{animationDelay: '0.4s'}}
+          >
+            Experience
+          </a>
+          
+          <div className="pt-8 flex flex-col items-center space-y-4">
+            <a href="tel:+911234567890" className="flex items-center space-x-3 text-[#E8DCC4] text-lg font-poppins">
+              <span className="text-2xl">📞</span>
+              <span>+91 123 456 7890</span>
+            </a>
+            <button className="px-12 py-4 bg-gradient-to-r from-[#C9A961] to-[#B8954A] text-white text-base font-poppins font-medium tracking-wide rounded-sm shadow-2xl">
+              Reserve Now
+            </button>
+          </div>
+        </div>
+      </div>
+
       {/* Hero Section - Cinematic */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-8 md:pt-24 md:pb-16">
+      <section className="relative min-h-[100svh] flex items-center justify-center overflow-hidden pt-16 pb-6 sm:pt-20 sm:pb-10 md:pt-24 md:pb-16">
         {/* Background with Banner Image */}
         <div className="absolute inset-0">
           <div className="absolute inset-0">
@@ -110,63 +208,70 @@ export default function Home() {
               quality={90}
             />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-br from-[#0B1D2E]/80 via-[#1A3A52]/70 to-[#0B1D2E]/80"></div>
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-[#0B1D2E]/85 via-[#1A3A52]/75 to-[#0B1D2E]/85"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-transparent"></div>
+        </div>
+
+        {/* Animated particles */}
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-[#C9A961]/30 rounded-full animate-float"></div>
+          <div className="absolute top-1/3 right-1/3 w-3 h-3 bg-[#E8DCC4]/20 rounded-full animate-float" style={{animationDelay: '1s'}}></div>
+          <div className="absolute bottom-1/4 left-1/3 w-2 h-2 bg-[#C9A961]/25 rounded-full animate-float" style={{animationDelay: '2s'}}></div>
         </div>
 
         {/* Content */}
         <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-[1200px] mx-auto w-full">
           {/* Decorative Line */}
-          <div className="flex items-center justify-center mb-6 md:mb-8 animate-fade-in" style={{animationDelay: '0.2s', opacity: 0}}>
-            <div className="h-px w-12 md:w-16 bg-gradient-to-r from-transparent to-[#C9A961]"></div>
-            <div className="mx-3 md:mx-4 text-[#E8DCC4] text-[10px] md:text-xs tracking-[0.2em] md:tracking-[0.3em] uppercase font-light whitespace-nowrap">Premium Transfers</div>
-            <div className="h-px w-12 md:w-16 bg-gradient-to-l from-transparent to-[#C9A961]"></div>
+          <div className="flex items-center justify-center mb-3 sm:mb-5 md:mb-8 animate-fade-in" style={{animationDelay: '0.2s', opacity: 0}}>
+            <div className="h-px w-6 sm:w-10 md:w-16 bg-gradient-to-r from-transparent to-[#C9A961]"></div>
+            <div className="mx-2 sm:mx-3 md:mx-4 text-[#E8DCC4] text-[8px] sm:text-[10px] md:text-xs tracking-[0.2em] sm:tracking-[0.25em] md:tracking-[0.3em] uppercase font-poppins font-light whitespace-nowrap">Premium Transfers</div>
+            <div className="h-px w-6 sm:w-10 md:w-16 bg-gradient-to-l from-transparent to-[#C9A961]"></div>
           </div>
 
-          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-6 md:mb-8 leading-[1.05] tracking-tight px-4 animate-fade-in-up" style={{animationDelay: '0.4s', opacity: 0}}>
+          <h1 className="font-serif text-[2.5rem] sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-3 sm:mb-5 md:mb-8 leading-[1.1] tracking-tight px-2 animate-fade-in-up" style={{animationDelay: '0.4s', opacity: 0}}>
             Journey in
-            <span className="block mt-1 md:mt-2 bg-gradient-to-r from-[#E8DCC4] via-[#C9A961] to-[#E8DCC4] bg-clip-text text-transparent">
+            <span className="block mt-1 sm:mt-2 bg-gradient-to-r from-[#E8DCC4] via-[#C9A961] to-[#E8DCC4] bg-clip-text text-transparent animate-pulse" style={{animation: 'pulse 3s ease-in-out infinite'}}>
               Grandeur
             </span>
           </h1>
 
-          <p className="font-display text-base sm:text-lg md:text-xl lg:text-2xl text-[#E8DCC4] mb-8 md:mb-12 max-w-3xl mx-auto leading-relaxed font-light px-4 animate-fade-in" style={{animationDelay: '0.6s', opacity: 0}}>
+          <p className="font-poppins text-sm sm:text-base md:text-lg lg:text-xl text-[#E8DCC4] mb-6 sm:mb-8 md:mb-12 max-w-2xl mx-auto leading-relaxed font-light px-6 animate-fade-in" style={{animationDelay: '0.6s', opacity: 0}}>
             Experience the epitome of luxury travel through Rajasthan's royal cities
           </p>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6 mb-12 md:mb-16 px-4 animate-fade-in-up" style={{animationDelay: '0.8s', opacity: 0}}>
-            <button className="group relative px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 bg-gradient-to-r from-[#C9A961] to-[#B8954A] text-white text-sm sm:text-base font-medium tracking-wide overflow-hidden rounded-sm shadow-2xl hover:shadow-[0_20px_60px_rgba(201,169,97,0.4)] transition-all duration-500 transform hover:scale-105 w-full sm:w-auto">
-              <span className="relative z-10 flex items-center justify-center">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 sm:gap-4 md:gap-6 mb-6 sm:mb-10 md:mb-16 px-4 animate-fade-in-up" style={{animationDelay: '0.8s', opacity: 0}}>
+            <button className="group relative px-6 sm:px-8 md:px-10 py-3.5 sm:py-4 md:py-5 bg-gradient-to-r from-[#C9A961] to-[#B8954A] text-white text-sm sm:text-base font-poppins font-medium tracking-wide overflow-hidden rounded-sm shadow-2xl hover:shadow-[0_20px_60px_rgba(201,169,97,0.5)] transition-all duration-500 transform hover:scale-105 active:scale-95">
+              <span className="relative z-10 flex items-center justify-center whitespace-nowrap">
                 Reserve Your Journey
                 <svg className="w-4 h-4 sm:w-5 sm:h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                 </svg>
               </span>
             </button>
-            <button className="px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 bg-transparent border-2 border-white/40 text-white text-sm sm:text-base font-medium tracking-wide backdrop-blur-sm hover:bg-white/10 hover:border-white/60 transition-all duration-300 rounded-sm w-full sm:w-auto">
+            <button className="px-6 sm:px-8 md:px-10 py-3.5 sm:py-4 md:py-5 bg-transparent border-2 border-white/40 text-white text-sm sm:text-base font-poppins font-medium tracking-wide backdrop-blur-sm hover:bg-white/10 hover:border-white/60 transition-all duration-300 rounded-sm active:scale-95">
               View Our Fleet
             </button>
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 max-w-4xl mx-auto pt-8 md:pt-12 border-t border-white/20 px-4 animate-fade-in" style={{animationDelay: '1s', opacity: 0}}>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-8 max-w-4xl mx-auto pt-6 md:pt-12 border-t border-white/20 px-4 animate-fade-in" style={{animationDelay: '1s', opacity: 0}}>
             <div className="text-center">
-              <div className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#C9A961] mb-1 md:mb-2">24/7</div>
-              <div className="text-xs sm:text-sm text-white/70 tracking-wide uppercase font-light">Service</div>
+              <div className="font-serif text-2xl sm:text-4xl md:text-5xl font-bold text-[#C9A961] mb-1">24/7</div>
+              <div className="text-[10px] sm:text-sm text-white/70 tracking-wide uppercase font-light">Service</div>
             </div>
             <div className="text-center">
-              <div className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#C9A961] mb-1 md:mb-2">10K+</div>
-              <div className="text-xs sm:text-sm text-white/70 tracking-wide uppercase font-light">Guests</div>
+              <div className="font-serif text-2xl sm:text-4xl md:text-5xl font-bold text-[#C9A961] mb-1">10K+</div>
+              <div className="text-[10px] sm:text-sm text-white/70 tracking-wide uppercase font-light">Guests</div>
             </div>
             <div className="text-center">
-              <div className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#C9A961] mb-1 md:mb-2">50+</div>
-              <div className="text-xs sm:text-sm text-white/70 tracking-wide uppercase font-light">Vehicles</div>
+              <div className="font-serif text-2xl sm:text-4xl md:text-5xl font-bold text-[#C9A961] mb-1">50+</div>
+              <div className="text-[10px] sm:text-sm text-white/70 tracking-wide uppercase font-light">Vehicles</div>
             </div>
             <div className="text-center">
-              <div className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#C9A961] mb-1 md:mb-2">4.9★</div>
-              <div className="text-xs sm:text-sm text-white/70 tracking-wide uppercase font-light">Rating</div>
+              <div className="font-serif text-2xl sm:text-4xl md:text-5xl font-bold text-[#C9A961] mb-1">4.9★</div>
+              <div className="text-[10px] sm:text-sm text-white/70 tracking-wide uppercase font-light">Rating</div>
             </div>
           </div>
         </div>
@@ -254,31 +359,31 @@ export default function Home() {
             </div>
 
             {/* Service 2 */}
-            <div className="group relative bg-white rounded-2xl overflow-hidden hover:shadow-[0_25px_80px_rgba(212,165,165,0.2)] transition-all duration-700 transform hover:-translate-y-4 border border-[#F5EDED]">
-              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#D4A5A5] via-[#E8C5C5] to-[#D4A5A5]"></div>
-              <div className="absolute inset-0 bg-gradient-to-br from-[#D4A5A5]/0 via-[#D4A5A5]/0 to-[#D4A5A5]/0 group-hover:from-[#D4A5A5]/5 group-hover:via-[#D4A5A5]/3 group-hover:to-[#D4A5A5]/5 transition-all duration-700"></div>
-              <div className="relative p-10">
-                <div className="relative mb-8">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#D4A5A5]/20 to-[#E8C5C5]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-700"></div>
-                  <div className="relative w-20 h-20 bg-gradient-to-br from-[#D4A5A5]/10 to-[#E8C5C5]/10 rounded-2xl flex items-center justify-center border border-[#D4A5A5]/20 group-hover:scale-110 group-hover:border-[#D4A5A5]/40 transition-all duration-700 shadow-lg">
-                    <span className="text-4xl">🚂</span>
+            <div className="group relative bg-white rounded-xl md:rounded-2xl overflow-hidden hover:shadow-[0_25px_80px_rgba(201,169,97,0.2)] transition-all duration-700 transform hover:-translate-y-2 md:hover:-translate-y-4 border border-[#F5F1E8]">
+              <div className="absolute top-0 left-0 right-0 h-1 md:h-1.5 bg-gradient-to-r from-[#C9A961] via-[#E8DCC4] to-[#C9A961]"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#C9A961]/0 via-[#C9A961]/0 to-[#C9A961]/0 group-hover:from-[#C9A961]/5 group-hover:via-[#C9A961]/3 group-hover:to-[#C9A961]/5 transition-all duration-700"></div>
+              <div className="relative p-6 md:p-10">
+                <div className="relative mb-6 md:mb-8">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#C9A961]/20 to-[#E8DCC4]/20 rounded-xl md:rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-700"></div>
+                  <div className="relative w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#C9A961]/10 to-[#E8DCC4]/10 rounded-xl md:rounded-2xl flex items-center justify-center border border-[#C9A961]/20 group-hover:scale-110 group-hover:border-[#C9A961]/40 transition-all duration-700 shadow-lg">
+                    <span className="text-3xl md:text-4xl">🚂</span>
                   </div>
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-[#0B1D2E] mb-4 group-hover:text-[#D4A5A5] transition-colors duration-300">Railway Concierge</h3>
-                <p className="text-gray-600 leading-relaxed mb-8 text-[15px]">
+                <h3 className="font-serif text-xl md:text-2xl font-bold text-[#0B1D2E] mb-3 md:mb-4 group-hover:text-[#C9A961] transition-colors duration-300">Railway Concierge</h3>
+                <p className="text-gray-600 leading-relaxed mb-6 md:mb-8 text-sm md:text-[15px]">
                   Premium pickups from Jaipur Junction and Udaipur City Station. Platform-side service for your convenience.
                 </p>
-                <ul className="space-y-4">
-                  <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                <ul className="space-y-3 md:space-y-4">
+                  <li className="flex items-start text-xs md:text-sm text-gray-700">
+                    <span className="text-[#C9A961] mr-2 md:mr-3 mt-0.5 text-lg md:text-xl font-bold">✓</span>
                     <span className="leading-relaxed">Platform-side pickup</span>
                   </li>
-                  <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                  <li className="flex items-start text-xs md:text-sm text-gray-700">
+                    <span className="text-[#C9A961] mr-2 md:mr-3 mt-0.5 text-lg md:text-xl font-bold">✓</span>
                     <span className="leading-relaxed">Train delay monitoring</span>
                   </li>
-                  <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                  <li className="flex items-start text-xs md:text-sm text-gray-700">
+                    <span className="text-[#C9A961] mr-2 md:mr-3 mt-0.5 text-lg md:text-xl font-bold">✓</span>
                     <span className="leading-relaxed">Refreshments on board</span>
                   </li>
                 </ul>
@@ -286,31 +391,31 @@ export default function Home() {
             </div>
 
             {/* Service 3 */}
-            <div className="group relative bg-white rounded-2xl overflow-hidden hover:shadow-[0_25px_80px_rgba(212,165,165,0.2)] transition-all duration-700 transform hover:-translate-y-4 border border-[#F5EDED]">
-              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#D4A5A5] via-[#E8C5C5] to-[#D4A5A5]"></div>
-              <div className="absolute inset-0 bg-gradient-to-br from-[#D4A5A5]/0 via-[#D4A5A5]/0 to-[#D4A5A5]/0 group-hover:from-[#D4A5A5]/5 group-hover:via-[#D4A5A5]/3 group-hover:to-[#D4A5A5]/5 transition-all duration-700"></div>
-              <div className="relative p-10">
-                <div className="relative mb-8">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#D4A5A5]/20 to-[#E8C5C5]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-700"></div>
-                  <div className="relative w-20 h-20 bg-gradient-to-br from-[#D4A5A5]/10 to-[#E8C5C5]/10 rounded-2xl flex items-center justify-center border border-[#D4A5A5]/20 group-hover:scale-110 group-hover:border-[#D4A5A5]/40 transition-all duration-700 shadow-lg">
-                    <span className="text-4xl">🏰</span>
+            <div className="group relative bg-white rounded-xl md:rounded-2xl overflow-hidden hover:shadow-[0_25px_80px_rgba(201,169,97,0.2)] transition-all duration-700 transform hover:-translate-y-2 md:hover:-translate-y-4 border border-[#F5F1E8]">
+              <div className="absolute top-0 left-0 right-0 h-1 md:h-1.5 bg-gradient-to-r from-[#C9A961] via-[#E8DCC4] to-[#C9A961]"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#C9A961]/0 via-[#C9A961]/0 to-[#C9A961]/0 group-hover:from-[#C9A961]/5 group-hover:via-[#C9A961]/3 group-hover:to-[#C9A961]/5 transition-all duration-700"></div>
+              <div className="relative p-6 md:p-10">
+                <div className="relative mb-6 md:mb-8">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#C9A961]/20 to-[#E8DCC4]/20 rounded-xl md:rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-700"></div>
+                  <div className="relative w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#C9A961]/10 to-[#E8DCC4]/10 rounded-xl md:rounded-2xl flex items-center justify-center border border-[#C9A961]/20 group-hover:scale-110 group-hover:border-[#C9A961]/40 transition-all duration-700 shadow-lg">
+                    <span className="text-3xl md:text-4xl">🏰</span>
                   </div>
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-[#0B1D2E] mb-4 group-hover:text-[#D4A5A5] transition-colors duration-300">Heritage Tours</h3>
-                <p className="text-gray-600 leading-relaxed mb-8 text-[15px]">
+                <h3 className="font-serif text-xl md:text-2xl font-bold text-[#0B1D2E] mb-3 md:mb-4 group-hover:text-[#C9A961] transition-colors duration-300">Heritage Tours</h3>
+                <p className="text-gray-600 leading-relaxed mb-6 md:mb-8 text-sm md:text-[15px]">
                   Bespoke cultural journeys through Rajasthan's magnificent palaces, forts, and hidden gems.
                 </p>
-                <ul className="space-y-4">
-                  <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                <ul className="space-y-3 md:space-y-4">
+                  <li className="flex items-start text-xs md:text-sm text-gray-700">
+                    <span className="text-[#C9A961] mr-2 md:mr-3 mt-0.5 text-lg md:text-xl font-bold">✓</span>
                     <span className="leading-relaxed">Certified heritage guides</span>
                   </li>
-                  <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                  <li className="flex items-start text-xs md:text-sm text-gray-700">
+                    <span className="text-[#C9A961] mr-2 md:mr-3 mt-0.5 text-lg md:text-xl font-bold">✓</span>
                     <span className="leading-relaxed">Skip-the-line access</span>
                   </li>
-                  <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                  <li className="flex items-start text-xs md:text-sm text-gray-700">
+                    <span className="text-[#C9A961] mr-2 md:mr-3 mt-0.5 text-lg md:text-xl font-bold">✓</span>
                     <span className="leading-relaxed">Custom itineraries</span>
                   </li>
                 </ul>
@@ -318,31 +423,31 @@ export default function Home() {
             </div>
 
             {/* Service 4 */}
-            <div className="group relative bg-white rounded-2xl overflow-hidden hover:shadow-[0_25px_80px_rgba(212,165,165,0.2)] transition-all duration-700 transform hover:-translate-y-4 border border-[#F5EDED]">
-              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#D4A5A5] via-[#E8C5C5] to-[#D4A5A5]"></div>
-              <div className="absolute inset-0 bg-gradient-to-br from-[#D4A5A5]/0 via-[#D4A5A5]/0 to-[#D4A5A5]/0 group-hover:from-[#D4A5A5]/5 group-hover:via-[#D4A5A5]/3 group-hover:to-[#D4A5A5]/5 transition-all duration-700"></div>
-              <div className="relative p-10">
-                <div className="relative mb-8">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#D4A5A5]/20 to-[#E8C5C5]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-700"></div>
-                  <div className="relative w-20 h-20 bg-gradient-to-br from-[#D4A5A5]/10 to-[#E8C5C5]/10 rounded-2xl flex items-center justify-center border border-[#D4A5A5]/20 group-hover:scale-110 group-hover:border-[#D4A5A5]/40 transition-all duration-700 shadow-lg">
-                    <span className="text-4xl">💼</span>
+            <div className="group relative bg-white rounded-xl md:rounded-2xl overflow-hidden hover:shadow-[0_25px_80px_rgba(201,169,97,0.2)] transition-all duration-700 transform hover:-translate-y-2 md:hover:-translate-y-4 border border-[#F5F1E8]">
+              <div className="absolute top-0 left-0 right-0 h-1 md:h-1.5 bg-gradient-to-r from-[#C9A961] via-[#E8DCC4] to-[#C9A961]"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#C9A961]/0 via-[#C9A961]/0 to-[#C9A961]/0 group-hover:from-[#C9A961]/5 group-hover:via-[#C9A961]/3 group-hover:to-[#C9A961]/5 transition-all duration-700"></div>
+              <div className="relative p-6 md:p-10">
+                <div className="relative mb-6 md:mb-8">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#C9A961]/20 to-[#E8DCC4]/20 rounded-xl md:rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-700"></div>
+                  <div className="relative w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#C9A961]/10 to-[#E8DCC4]/10 rounded-xl md:rounded-2xl flex items-center justify-center border border-[#C9A961]/20 group-hover:scale-110 group-hover:border-[#C9A961]/40 transition-all duration-700 shadow-lg">
+                    <span className="text-3xl md:text-4xl">💼</span>
                   </div>
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-[#0B1D2E] mb-4 group-hover:text-[#D4A5A5] transition-colors duration-300">Executive Services</h3>
-                <p className="text-gray-600 leading-relaxed mb-8 text-[15px]">
+                <h3 className="font-serif text-xl md:text-2xl font-bold text-[#0B1D2E] mb-3 md:mb-4 group-hover:text-[#C9A961] transition-colors duration-300">Executive Services</h3>
+                <p className="text-gray-600 leading-relaxed mb-6 md:mb-8 text-sm md:text-[15px]">
                   Professional transportation for business travelers with productivity-focused amenities.
                 </p>
-                <ul className="space-y-4">
-                  <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                <ul className="space-y-3 md:space-y-4">
+                  <li className="flex items-start text-xs md:text-sm text-gray-700">
+                    <span className="text-[#C9A961] mr-2 md:mr-3 mt-0.5 text-lg md:text-xl font-bold">✓</span>
                     <span className="leading-relaxed">Mobile office setup</span>
                   </li>
-                  <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                  <li className="flex items-start text-xs md:text-sm text-gray-700">
+                    <span className="text-[#C9A961] mr-2 md:mr-3 mt-0.5 text-lg md:text-xl font-bold">✓</span>
                     <span className="leading-relaxed">Corporate billing</span>
                   </li>
-                  <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                  <li className="flex items-start text-xs md:text-sm text-gray-700">
+                    <span className="text-[#C9A961] mr-2 md:mr-3 mt-0.5 text-lg md:text-xl font-bold">✓</span>
                     <span className="leading-relaxed">Multi-city packages</span>
                   </li>
                 </ul>
@@ -350,31 +455,31 @@ export default function Home() {
             </div>
 
             {/* Service 5 */}
-            <div className="group relative bg-white rounded-2xl overflow-hidden hover:shadow-[0_25px_80px_rgba(212,165,165,0.2)] transition-all duration-700 transform hover:-translate-y-4 border border-[#F5EDED]">
-              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#D4A5A5] via-[#E8C5C5] to-[#D4A5A5]"></div>
-              <div className="absolute inset-0 bg-gradient-to-br from-[#D4A5A5]/0 via-[#D4A5A5]/0 to-[#D4A5A5]/0 group-hover:from-[#D4A5A5]/5 group-hover:via-[#D4A5A5]/3 group-hover:to-[#D4A5A5]/5 transition-all duration-700"></div>
-              <div className="relative p-10">
-                <div className="relative mb-8">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#D4A5A5]/20 to-[#E8C5C5]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-700"></div>
-                  <div className="relative w-20 h-20 bg-gradient-to-br from-[#D4A5A5]/10 to-[#E8C5C5]/10 rounded-2xl flex items-center justify-center border border-[#D4A5A5]/20 group-hover:scale-110 group-hover:border-[#D4A5A5]/40 transition-all duration-700 shadow-lg">
-                    <span className="text-4xl">💍</span>
+            <div className="group relative bg-white rounded-xl md:rounded-2xl overflow-hidden hover:shadow-[0_25px_80px_rgba(201,169,97,0.2)] transition-all duration-700 transform hover:-translate-y-2 md:hover:-translate-y-4 border border-[#F5F1E8]">
+              <div className="absolute top-0 left-0 right-0 h-1 md:h-1.5 bg-gradient-to-r from-[#C9A961] via-[#E8DCC4] to-[#C9A961]"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#C9A961]/0 via-[#C9A961]/0 to-[#C9A961]/0 group-hover:from-[#C9A961]/5 group-hover:via-[#C9A961]/3 group-hover:to-[#C9A961]/5 transition-all duration-700"></div>
+              <div className="relative p-6 md:p-10">
+                <div className="relative mb-6 md:mb-8">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#C9A961]/20 to-[#E8DCC4]/20 rounded-xl md:rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-700"></div>
+                  <div className="relative w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#C9A961]/10 to-[#E8DCC4]/10 rounded-xl md:rounded-2xl flex items-center justify-center border border-[#C9A961]/20 group-hover:scale-110 group-hover:border-[#C9A961]/40 transition-all duration-700 shadow-lg">
+                    <span className="text-3xl md:text-4xl">💍</span>
                   </div>
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-[#0B1D2E] mb-4 group-hover:text-[#D4A5A5] transition-colors duration-300">Special Occasions</h3>
-                <p className="text-gray-600 leading-relaxed mb-8 text-[15px]">
+                <h3 className="font-serif text-xl md:text-2xl font-bold text-[#0B1D2E] mb-3 md:mb-4 group-hover:text-[#C9A961] transition-colors duration-300">Special Occasions</h3>
+                <p className="text-gray-600 leading-relaxed mb-6 md:mb-8 text-sm md:text-[15px]">
                   Celebrate life's precious moments with our decorated luxury vehicles and white-glove service.
                 </p>
-                <ul className="space-y-4">
-                  <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                <ul className="space-y-3 md:space-y-4">
+                  <li className="flex items-start text-xs md:text-sm text-gray-700">
+                    <span className="text-[#C9A961] mr-2 md:mr-3 mt-0.5 text-lg md:text-xl font-bold">✓</span>
                     <span className="leading-relaxed">Floral decorations</span>
                   </li>
-                  <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                  <li className="flex items-start text-xs md:text-sm text-gray-700">
+                    <span className="text-[#C9A961] mr-2 md:mr-3 mt-0.5 text-lg md:text-xl font-bold">✓</span>
                     <span className="leading-relaxed">Champagne service</span>
                   </li>
-                  <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                  <li className="flex items-start text-xs md:text-sm text-gray-700">
+                    <span className="text-[#C9A961] mr-2 md:mr-3 mt-0.5 text-lg md:text-xl font-bold">✓</span>
                     <span className="leading-relaxed">Photography assistance</span>
                   </li>
                 </ul>
@@ -382,31 +487,31 @@ export default function Home() {
             </div>
 
             {/* Service 6 */}
-            <div className="group relative bg-white rounded-2xl overflow-hidden hover:shadow-[0_25px_80px_rgba(212,165,165,0.2)] transition-all duration-700 transform hover:-translate-y-4 border border-[#F5EDED]">
-              <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#D4A5A5] via-[#E8C5C5] to-[#D4A5A5]"></div>
-              <div className="absolute inset-0 bg-gradient-to-br from-[#D4A5A5]/0 via-[#D4A5A5]/0 to-[#D4A5A5]/0 group-hover:from-[#D4A5A5]/5 group-hover:via-[#D4A5A5]/3 group-hover:to-[#D4A5A5]/5 transition-all duration-700"></div>
-              <div className="relative p-10">
-                <div className="relative mb-8">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#D4A5A5]/20 to-[#E8C5C5]/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-700"></div>
-                  <div className="relative w-20 h-20 bg-gradient-to-br from-[#D4A5A5]/10 to-[#E8C5C5]/10 rounded-2xl flex items-center justify-center border border-[#D4A5A5]/20 group-hover:scale-110 group-hover:border-[#D4A5A5]/40 transition-all duration-700 shadow-lg">
-                    <span className="text-4xl">🛣️</span>
+            <div className="group relative bg-white rounded-xl md:rounded-2xl overflow-hidden hover:shadow-[0_25px_80px_rgba(201,169,97,0.2)] transition-all duration-700 transform hover:-translate-y-2 md:hover:-translate-y-4 border border-[#F5F1E8]">
+              <div className="absolute top-0 left-0 right-0 h-1 md:h-1.5 bg-gradient-to-r from-[#C9A961] via-[#E8DCC4] to-[#C9A961]"></div>
+              <div className="absolute inset-0 bg-gradient-to-br from-[#C9A961]/0 via-[#C9A961]/0 to-[#C9A961]/0 group-hover:from-[#C9A961]/5 group-hover:via-[#C9A961]/3 group-hover:to-[#C9A961]/5 transition-all duration-700"></div>
+              <div className="relative p-6 md:p-10">
+                <div className="relative mb-6 md:mb-8">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#C9A961]/20 to-[#E8DCC4]/20 rounded-xl md:rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-700"></div>
+                  <div className="relative w-16 h-16 md:w-20 md:h-20 bg-gradient-to-br from-[#C9A961]/10 to-[#E8DCC4]/10 rounded-xl md:rounded-2xl flex items-center justify-center border border-[#C9A961]/20 group-hover:scale-110 group-hover:border-[#C9A961]/40 transition-all duration-700 shadow-lg">
+                    <span className="text-3xl md:text-4xl">🛣️</span>
                   </div>
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-[#0B1D2E] mb-4 group-hover:text-[#D4A5A5] transition-colors duration-300">Intercity Journeys</h3>
-                <p className="text-gray-600 leading-relaxed mb-8 text-[15px]">
+                <h3 className="font-serif text-xl md:text-2xl font-bold text-[#0B1D2E] mb-3 md:mb-4 group-hover:text-[#C9A961] transition-colors duration-300">Intercity Journeys</h3>
+                <p className="text-gray-600 leading-relaxed mb-6 md:mb-8 text-sm md:text-[15px]">
                   Comfortable long-distance travel between Rajasthan's cities with scenic routes and rest stops.
                 </p>
-                <ul className="space-y-4">
-                  <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                <ul className="space-y-3 md:space-y-4">
+                  <li className="flex items-start text-xs md:text-sm text-gray-700">
+                    <span className="text-[#C9A961] mr-2 md:mr-3 mt-0.5 text-lg md:text-xl font-bold">✓</span>
                     <span className="leading-relaxed">Flexible routing</span>
                   </li>
-                  <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                  <li className="flex items-start text-xs md:text-sm text-gray-700">
+                    <span className="text-[#C9A961] mr-2 md:mr-3 mt-0.5 text-lg md:text-xl font-bold">✓</span>
                     <span className="leading-relaxed">Curated rest stops</span>
                   </li>
-                  <li className="flex items-start text-sm text-gray-700">
-                    <span className="text-[#D4A5A5] mr-3 mt-0.5 text-xl font-bold">✓</span>
+                  <li className="flex items-start text-xs md:text-sm text-gray-700">
+                    <span className="text-[#C9A961] mr-2 md:mr-3 mt-0.5 text-lg md:text-xl font-bold">✓</span>
                     <span className="leading-relaxed">Refreshment packages</span>
                   </li>
                 </ul>
@@ -417,69 +522,177 @@ export default function Home() {
       </section>
 
       {/* Fleet Section - Luxury Showcase */}
-      <section id="fleet" className="py-32 bg-[#0B1D2E] text-white">
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
+      <section id="fleet" className="py-16 sm:py-24 md:py-32 bg-[#0B1D2E] text-white scroll-reveal">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12">
           {/* Section Header */}
-          <div className="text-center max-w-3xl mx-auto mb-20">
-            <div className="flex items-center justify-center mb-6">
-              <div className="h-[1px] w-12 bg-[#C9A961]"></div>
-              <span className="mx-4 text-[#C9A961] text-xs tracking-[0.3em] uppercase font-medium">Our Fleet</span>
-              <div className="h-[1px] w-12 bg-[#C9A961]"></div>
+          <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16 md:mb-20">
+            <div className="flex items-center justify-center mb-4 sm:mb-6">
+              <div className="h-[1px] w-8 sm:w-12 bg-[#C9A961]"></div>
+              <span className="mx-3 sm:mx-4 text-[#C9A961] text-[10px] sm:text-xs tracking-[0.25em] sm:tracking-[0.3em] uppercase font-poppins font-medium">Our Fleet</span>
+              <div className="h-[1px] w-8 sm:w-12 bg-[#C9A961]"></div>
             </div>
-            <h2 className="font-serif text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight tracking-tight">
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 leading-tight tracking-tight">
               The Finest <span className="text-[#C9A961]">Automobiles</span>
             </h2>
-            <p className="font-display text-xl text-gray-400 leading-relaxed">
+            <p className="font-poppins text-base sm:text-lg md:text-xl text-gray-400 leading-relaxed px-4">
               Meticulously maintained vehicles that define luxury and comfort
             </p>
           </div>
 
-          {/* Fleet Grid */}
-          <div className="grid lg:grid-cols-3 gap-8 mb-16">
-            {/* Vehicle 1 */}
-            <div className="group relative bg-[#1A3A52] rounded-none overflow-hidden hover:shadow-2xl transition-all duration-500">
-              <div className="relative h-72 overflow-hidden">
-                <Image
-                  src="/assets/sedan.avif"
-                  alt="Luxury Sedan"
-                  fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#1A3A52] via-transparent to-transparent"></div>
-                <div className="absolute top-4 right-4 bg-[#D4A5A5] px-4 py-1.5 text-xs tracking-wide uppercase font-medium shadow-lg">
-                  Premium
+          {/* Fleet Carousel - Mobile Optimized */}
+          <div className="lg:hidden relative mb-12">
+            <div className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4 px-4 pb-4">
+              {/* Vehicle 1 - Mobile */}
+              <div className="flex-shrink-0 w-[85vw] sm:w-[70vw] snap-center">
+                <div className="group relative bg-[#1A3A52] rounded-lg overflow-hidden shadow-2xl transform transition-all duration-300 active:scale-95">
+                  <div className="relative h-56 sm:h-64 overflow-hidden">
+                    <Image
+                      src="/assets/sedan.avif"
+                      alt="Luxury Sedan"
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1A3A52] via-transparent to-transparent"></div>
+                    <div className="absolute top-3 right-3 bg-[#C9A961] px-3 py-1 text-[10px] tracking-wider uppercase font-poppins font-semibold shadow-lg rounded">
+                      Premium
+                    </div>
+                  </div>
+                  <div className="p-5 sm:p-6">
+                    <h3 className="font-serif text-2xl sm:text-3xl font-bold mb-1">Luxury Sedan</h3>
+                    <p className="text-gray-400 text-xs sm:text-sm mb-4">Perfect for business and couples</p>
+                    
+                    <div className="space-y-2 mb-5">
+                      <div className="flex items-center text-xs sm:text-sm text-gray-300">
+                        <span className="w-5 sm:w-6 text-base">👥</span>
+                        <span className="font-poppins">Up to 3 passengers</span>
+                      </div>
+                      <div className="flex items-center text-xs sm:text-sm text-gray-300">
+                        <span className="w-5 sm:w-6 text-base">🧳</span>
+                        <span className="font-poppins">3 large suitcases</span>
+                      </div>
+                      <div className="flex items-center text-xs sm:text-sm text-gray-300">
+                        <span className="w-5 sm:w-6 text-base">⚡</span>
+                        <span className="font-poppins">WiFi, Climate control</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-end justify-between pt-4 border-t border-white/10">
+                      <div>
+                        <div className="text-[10px] sm:text-xs text-gray-400 mb-1 font-poppins">Starting from</div>
+                        <div className="font-serif text-3xl sm:text-4xl font-bold text-[#C9A961]">₹2,500</div>
+                      </div>
+                      <button className="text-xs sm:text-sm text-[#C9A961] hover:text-white transition-colors font-poppins font-medium">
+                        Learn More →
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div className="p-8">
-                <h3 className="font-serif text-3xl font-bold mb-2">Luxury Sedan</h3>
-                <p className="text-gray-400 text-sm mb-6">Perfect for business and couples</p>
-                
-                <div className="space-y-3 mb-6">
-                  <div className="flex items-center text-sm text-gray-300">
-                    <span className="w-6">👥</span>
-                    <span>Up to 3 passengers</span>
+
+              {/* Vehicle 2 - Mobile */}
+              <div className="flex-shrink-0 w-[85vw] sm:w-[70vw] snap-center">
+                <div className="group relative bg-[#1A3A52] rounded-lg overflow-hidden shadow-2xl transform transition-all duration-300 active:scale-95">
+                  <div className="relative h-56 sm:h-64 overflow-hidden">
+                    <Image
+                      src="/assets/fortuner.avif"
+                      alt="Luxury SUV"
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1A3A52] via-transparent to-transparent"></div>
+                    <div className="absolute top-3 right-3 bg-[#C9A961] px-3 py-1 text-[10px] tracking-wider uppercase font-poppins font-semibold shadow-lg rounded">
+                      Popular
+                    </div>
                   </div>
-                  <div className="flex items-center text-sm text-gray-300">
-                    <span className="w-6">🧳</span>
-                    <span>3 large suitcases</span>
-                  </div>
-                  <div className="flex items-center text-sm text-gray-300">
-                    <span className="w-6">⚡</span>
-                    <span>WiFi, Climate control, Entertainment</span>
+                  <div className="p-5 sm:p-6">
+                    <h3 className="font-serif text-2xl sm:text-3xl font-bold mb-1">Luxury SUV</h3>
+                    <p className="text-gray-400 text-xs sm:text-sm mb-4">Spacious comfort for families</p>
+                    
+                    <div className="space-y-2 mb-5">
+                      <div className="flex items-center text-xs sm:text-sm text-gray-300">
+                        <span className="w-5 sm:w-6 text-base">👥</span>
+                        <span className="font-poppins">Up to 6 passengers</span>
+                      </div>
+                      <div className="flex items-center text-xs sm:text-sm text-gray-300">
+                        <span className="w-5 sm:w-6 text-base">🧳</span>
+                        <span className="font-poppins">5 large suitcases</span>
+                      </div>
+                      <div className="flex items-center text-xs sm:text-sm text-gray-300">
+                        <span className="w-5 sm:w-6 text-base">⚡</span>
+                        <span className="font-poppins">Dual AC, Premium audio</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-end justify-between pt-4 border-t border-white/10">
+                      <div>
+                        <div className="text-[10px] sm:text-xs text-gray-400 mb-1 font-poppins">Starting from</div>
+                        <div className="font-serif text-3xl sm:text-4xl font-bold text-[#C9A961]">₹3,500</div>
+                      </div>
+                      <button className="text-xs sm:text-sm text-[#C9A961] hover:text-white transition-colors font-poppins font-medium">
+                        Learn More →
+                      </button>
+                    </div>
                   </div>
                 </div>
+              </div>
 
-                <div className="flex items-end justify-between pt-6 border-t border-white/10">
-                  <div>
-                    <div className="text-xs text-gray-400 mb-1">Starting from</div>
-                    <div className="font-serif text-4xl font-bold text-[#C9A961]">₹2,500</div>
+              {/* Vehicle 3 - Mobile */}
+              <div className="flex-shrink-0 w-[85vw] sm:w-[70vw] snap-center">
+                <div className="group relative bg-[#1A3A52] rounded-lg overflow-hidden shadow-2xl transform transition-all duration-300 active:scale-95">
+                  <div className="relative h-56 sm:h-64 overflow-hidden">
+                    <Image
+                      src="/assets/toyota_hiace.avif"
+                      alt="Executive Van"
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#1A3A52] via-transparent to-transparent"></div>
+                    <div className="absolute top-3 right-3 bg-[#C9A961] px-3 py-1 text-[10px] tracking-wider uppercase font-poppins font-semibold shadow-lg rounded">
+                      Groups
+                    </div>
                   </div>
-                  <button className="text-sm text-[#C9A961] hover:text-white transition-colors">
-                    Learn More →
-                  </button>
+                  <div className="p-5 sm:p-6">
+                    <h3 className="font-serif text-2xl sm:text-3xl font-bold mb-1">Executive Van</h3>
+                    <p className="text-gray-400 text-xs sm:text-sm mb-4">Ideal for large groups</p>
+                    
+                    <div className="space-y-2 mb-5">
+                      <div className="flex items-center text-xs sm:text-sm text-gray-300">
+                        <span className="w-5 sm:w-6 text-base">👥</span>
+                        <span className="font-poppins">Up to 10 passengers</span>
+                      </div>
+                      <div className="flex items-center text-xs sm:text-sm text-gray-300">
+                        <span className="w-5 sm:w-6 text-base">🧳</span>
+                        <span className="font-poppins">8 large suitcases</span>
+                      </div>
+                      <div className="flex items-center text-xs sm:text-sm text-gray-300">
+                        <span className="w-5 sm:w-6 text-base">⚡</span>
+                        <span className="font-poppins">WiFi, Refreshments</span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-end justify-between pt-4 border-t border-white/10">
+                      <div>
+                        <div className="text-[10px] sm:text-xs text-gray-400 mb-1 font-poppins">Starting from</div>
+                        <div className="font-serif text-3xl sm:text-4xl font-bold text-[#C9A961]">₹5,000</div>
+                      </div>
+                      <button className="text-xs sm:text-sm text-[#C9A961] hover:text-white transition-colors font-poppins font-medium">
+                        Learn More →
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+            {/* Swipe Indicator */}
+            <div className="flex items-center justify-center mt-4 gap-2">
+              <span className="text-[#C9A961] text-2xl animate-pulse">←</span>
+              <span className="text-gray-400 text-xs font-poppins uppercase tracking-wider">Swipe to explore</span>
+              <span className="text-[#C9A961] text-2xl animate-pulse">→</span>
+            </div>
+          </div>
+
+          {/* Desktop Grid */}
+          <div className="hidden lg:grid lg:grid-cols-3 gap-8 mb-16">
 
             {/* Vehicle 2 */}
             <div className="group relative bg-[#1A3A52] rounded-none overflow-hidden hover:shadow-2xl transition-all duration-500">
@@ -491,7 +704,7 @@ export default function Home() {
                   className="object-cover group-hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1A3A52] via-transparent to-transparent"></div>
-                <div className="absolute top-4 right-4 bg-[#D4A5A5] px-4 py-1.5 text-xs tracking-wide uppercase font-medium shadow-lg">
+                <div className="absolute top-4 right-4 bg-[#C9A961] px-4 py-1.5 text-xs tracking-wide uppercase font-medium shadow-lg">
                   Popular
                 </div>
               </div>
@@ -536,7 +749,7 @@ export default function Home() {
                   className="object-cover group-hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#1A3A52] via-transparent to-transparent"></div>
-                <div className="absolute top-4 right-4 bg-[#D4A5A5] px-4 py-1.5 text-xs tracking-wide uppercase font-medium shadow-lg">
+                <div className="absolute top-4 right-4 bg-[#C9A961] px-4 py-1.5 text-xs tracking-wide uppercase font-medium shadow-lg">
                   Groups
                 </div>
               </div>
@@ -835,20 +1048,104 @@ export default function Home() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-32 bg-white">
-        <div className="max-w-[1400px] mx-auto px-6 lg:px-12">
-          <div className="text-center max-w-3xl mx-auto mb-20">
-            <div className="flex items-center justify-center mb-6">
-              <div className="h-[1px] w-12 bg-[#C9A961]"></div>
-              <span className="mx-4 text-[#C9A961] text-xs tracking-[0.3em] uppercase font-medium">Testimonials</span>
-              <div className="h-[1px] w-12 bg-[#C9A961]"></div>
+      <section className="py-16 sm:py-24 md:py-32 bg-white scroll-reveal">
+        <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-12">
+          <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-16 md:mb-20">
+            <div className="flex items-center justify-center mb-4 sm:mb-6">
+              <div className="h-[1px] w-8 sm:w-12 bg-[#C9A961]"></div>
+              <span className="mx-3 sm:mx-4 text-[#C9A961] text-[10px] sm:text-xs tracking-[0.25em] sm:tracking-[0.3em] uppercase font-poppins font-medium">Testimonials</span>
+              <div className="h-[1px] w-8 sm:w-12 bg-[#C9A961]"></div>
             </div>
-            <h2 className="font-serif text-5xl md:text-6xl font-bold text-[#0B1D2E] mb-6 leading-tight">
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#0B1D2E] mb-4 sm:mb-6 leading-tight">
               Traveler <span className="text-[#C9A961]">Stories</span>
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          {/* Mobile Carousel */}
+          <div className="md:hidden relative mb-12">
+            <div className="flex overflow-x-auto snap-x snap-mandatory hide-scrollbar gap-4 px-4 pb-4">
+              {/* Testimonial 1 - Mobile */}
+              <div className="flex-shrink-0 w-[90vw] snap-center">
+                <div className="bg-[#F5F1E8] rounded-lg p-6 sm:p-8 shadow-lg transform transition-all duration-300 active:scale-95">
+                  <div className="flex items-center mb-5">
+                    {[...Array(5)].map((_, i) => (
+                      <span key={i} className="text-[#C9A961] text-lg">★</span>
+                    ))}
+                  </div>
+                  <p className="font-poppins text-base text-gray-700 leading-relaxed mb-6 italic">
+                    "Exceptional service from arrival to departure. The Mercedes was immaculate, 
+                    and our driver was knowledgeable about Jaipur's history. Highly recommended."
+                  </p>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-gradient-to-br from-[#C9A961] to-[#B8954A] rounded-full flex items-center justify-center text-white font-bold text-base">
+                      JM
+                    </div>
+                    <div>
+                      <div className="font-serif font-bold text-[#0B1D2E]">James Mitchell</div>
+                      <div className="text-xs font-poppins text-gray-500">London, United Kingdom</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Testimonial 2 - Mobile */}
+              <div className="flex-shrink-0 w-[90vw] snap-center">
+                <div className="bg-[#F5F1E8] rounded-lg p-6 sm:p-8 shadow-lg transform transition-all duration-300 active:scale-95">
+                  <div className="flex items-center mb-5">
+                    {[...Array(5)].map((_, i) => (
+                      <span key={i} className="text-[#C9A961] text-lg">★</span>
+                    ))}
+                  </div>
+                  <p className="font-poppins text-base text-gray-700 leading-relaxed mb-6 italic">
+                    "The SUV was perfect for our family. Spacious, comfortable, and the driver 
+                    helped us discover hidden gems in Udaipur. Worth every rupee."
+                  </p>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-gradient-to-br from-[#C9A961] to-[#B8954A] rounded-full flex items-center justify-center text-white font-bold text-base">
+                      SP
+                    </div>
+                    <div>
+                      <div className="font-serif font-bold text-[#0B1D2E]">Sophia Patel</div>
+                      <div className="text-xs font-poppins text-gray-500">Mumbai, India</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Testimonial 3 - Mobile */}
+              <div className="flex-shrink-0 w-[90vw] snap-center">
+                <div className="bg-[#F5F1E8] rounded-lg p-6 sm:p-8 shadow-lg transform transition-all duration-300 active:scale-95">
+                  <div className="flex items-center mb-5">
+                    {[...Array(5)].map((_, i) => (
+                      <span key={i} className="text-[#C9A961] text-lg">★</span>
+                    ))}
+                  </div>
+                  <p className="font-poppins text-base text-gray-700 leading-relaxed mb-6 italic">
+                    "Professional corporate service. Punctual, comfortable, and seamless billing. 
+                    Our go-to for business travel in Rajasthan."
+                  </p>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-12 h-12 bg-gradient-to-br from-[#C9A961] to-[#B8954A] rounded-full flex items-center justify-center text-white font-bold text-base">
+                      RK
+                    </div>
+                    <div>
+                      <div className="font-serif font-bold text-[#0B1D2E]">Rajesh Kumar</div>
+                      <div className="text-xs font-poppins text-gray-500">Bangalore, India</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {/* Swipe Indicator */}
+            <div className="flex items-center justify-center mt-4 gap-2">
+              <span className="text-[#C9A961] text-2xl animate-pulse">←</span>
+              <span className="text-gray-500 text-xs font-poppins uppercase tracking-wider">Swipe for more</span>
+              <span className="text-[#C9A961] text-2xl animate-pulse">→</span>
+            </div>
+          </div>
+
+          {/* Desktop Grid */}
+          <div className="hidden md:grid md:grid-cols-3 gap-8">
             {/* Testimonial 1 */}
             <div className="bg-[#F5F1E8] p-10">
               <div className="flex items-center mb-6">
